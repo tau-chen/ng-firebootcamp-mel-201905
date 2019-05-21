@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Company } from '../company';
 import { CompanyService } from '../company.service';
-import { tap } from 'rxjs/operators' ;
+import { Company } from '../company';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'fbc-company-list',
@@ -16,18 +16,20 @@ export class CompanyListComponent implements OnInit {
     //this.companyService = companySvc;
    }
 
-   companies: Company[];
+   companies$: Observable<Company[]>;
 
   ngOnInit() {
 
-   this.companySvc.getCompanies()
-   .pipe(
-     tap(c => console.log('Tap got ' + c.length + ' companies'))
-   )
-   .subscribe(
-     next => this.companies = next,
-    error => console.error('ERROR', error),
-    () => console.log('Complete')
-    );
+   this.companies$ = this.companySvc.getCompanies();
+  }
+
+  deleteCompany(company: Company){
+    let a$: Observable<Company> = this.companySvc.deleteCompany(company);
+
+    a$.subscribe(c => this.companies$ = this.getCompanies());
+  }
+
+  getCompanies() {
+    return this.companySvc.getCompanies();
   }
 }
