@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Company } from '../company';
 import { CompanyService } from '../company.service';
+import { tap } from 'rxjs/operators' ;
 
 @Component({
   selector: 'fbc-company-list',
@@ -19,6 +20,14 @@ export class CompanyListComponent implements OnInit {
 
   ngOnInit() {
 
-    this.companies = this.companySvc.getCompanies()
+   this.companySvc.getCompanies()
+   .pipe(
+     tap(c => console.log('Tap got ' + c.length + ' companies'))
+   )
+   .subscribe(
+     next => this.companies = next,
+    error => console.error('ERROR', error),
+    () => console.log('Complete')
+    );
   }
 }

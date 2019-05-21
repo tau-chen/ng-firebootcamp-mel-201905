@@ -1,32 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Company } from './company';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyService {
 
-  constructor() { }
+  constructor(
+    private httpClient: HttpClient
+    ) { }
 
-  getCompanies(): Company[] {
-    return [
-      {
-        name: 'SSW',
-        phone: 12345,
-        email: 'info@ssw.com.au'
-      },
+  API_BASE = environment.API_BASE;
 
-      {
-        name: 'Microsoft',
-        phone: 45678,
-        email: 'info@microsoft.com.au'
-      },
-
-      {
-        name: 'Google',
-        phone: 123333,
-        email: 'info@google.com.au'
-      }
-    ];
+  getCompanies(): Observable<Company[]> {
+    return this.httpClient.get<Company[]>(this.API_BASE + '/company');
+    //return this.httpClient.get<Company[]>(`$this.API_BASE}/company`);
   }
 }
